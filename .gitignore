@@ -1,0 +1,7 @@
+/env
+.env
+
+dockerfile
+image.png
+teste.ipynb
+app/*.csv
