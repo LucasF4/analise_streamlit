@@ -7,21 +7,26 @@ st.set_page_config(
                     layout="wide",
                     page_title="Análise de Dados",
                 )
-st.title("Análise de Dados - Ocorrência Aeuronáuticas Brasileiras (2007 - 2023)")
-
-st.write("""
-    A Aviação Civil desempenha um papel crucial na conectividade global e no transporte de passageiros e cargas em todo o mundo.
-         No entanto, a segurança continua sendo uma prioridade primordial para a indústria da aviação.
-         O registro e análise de ocorrências aeronáuticas são componentes essenciais para identificar tendências, áreas de melhoria e para aprimorar os padrõe
-         de segurança.\n
-         \nEste projeto propõe uma análise detalhada das ocorrências aeronáuticas na Aviação Civil Brasileira,
-         o objetivo principal é extrair informações significativas dos dados disponíveis para entender melhor os padrões, causas e
-         consequências dessas ocorrências.
-""")
+st.title("Análise de Dados - Ocorrências Aeronáuticas na Aviação Civil Brasileira (2007-2023)")
 
 col1, col2, col3 = st.columns([1, 2, 1])  # Colunas com proporções de 1:2:1
 with col2:
     st.image('airplane.png', width=800)
+
+st.subheader("INTRODUÇÃO")
+st.divider()
+st.write("""
+    A Aviação Civil desempenha um papel crucial na conectividade global e no transporte de passageiros e cargas em todo o mundo.
+No entanto, a segurança continua sendo uma prioridade primordial para a indústria da aviação.
+O registro e análise de ocorrências aeronáuticas são componentes essenciais para identificar tendências, áreas de melhoria e para aprimorar os padrõe
+de segurança.\n
+    \nEste projeto propõe uma análise detalhada das ocorrências aeronáuticas na Aviação Civil Brasileira,
+o objetivo principal é extrair informações significativas dos dados disponíveis para entender melhor os padrões, causas e
+consequências dessas ocorrências.
+""")
+st.markdown("**Fonte dos Dados:**")
+st.write("https://dados.gov.br/dados/conjuntos-dados/ocorrencias-aeronauticas-da-aviacao-civil-brasileira")
+
 
 # Criação do Próximo dataframe
 df = pd.read_csv(os.getcwd() + '/app/ocorrencia.csv', sep=';', encoding="ISO-8859-1")
@@ -35,15 +40,19 @@ df4 = df[['ocorrencia_uf', 'total_aeronaves_envolvidas']].groupby('ocorrencia_uf
 
 df4 = df4.groupby('ocorrencia_uf')['count'].sum().reset_index()
 
-st.subheader('Ilustração do conjunto de dados apresentando informações como data, hora, localização, tipo de ocorrência, status de investigação, quantidade de aeronaves envolvidas. ')
+st.subheader("ANALISANDO OS DADOS")
+st.markdown('**TABELA DE OCORRENCIAS:**')
 st.dataframe(df)
+st.write('Ilustração do conjunto de dados apresentando informações como data, hora, localização, tipo de ocorrência, status de investigação, quantidade de aeronaves envolvidas')
+
+st.divider()
 
 #df = df['ocorrencia_latitude'].dropna()
 
 colunas = ['LAT', 'LON']
 dataframe1 = pd.read_csv(os.getcwd() + '/app/ocorrencias_LAT-LONG.txt', sep=";", names=colunas)
 
-fig = px.scatter_geo(dataframe1, lat="LAT", lon="LON", scope='south america', title="Mapa onde representa a localização de cada acidente")
+fig = px.scatter_geo(dataframe1, lat="LAT", lon="LON", scope='south america', title="Mapa de Localização das Ocorrências")
 
 fig2 = px.bar(df, x="ocorrencia_classificacao", y='ocorrencia_dia', title="Relatório de datas de cada tipo de ocorrência.")
 fig2.update_layout(xaxis_title="Tipos das Ocorrências", yaxis_title="Data Ocorrências")
@@ -58,6 +67,8 @@ with c2:
              O gráfico acima destaca os tipos de ocorrências (acidentes, incidentes e incidentes graves) e as datas em que cada ocorrência ocorreu.
              Ao passar o mouse em cima do gráfico, é possível verificar a data de cada tipo de ocorrência.
              """)
+
+st.divider()
 
 df2 = df['ocorrencia_uf'].value_counts().to_frame('counts')
 
@@ -81,19 +92,27 @@ fig2.update_layout(xaxis_title="UF", yaxis_title="Quantidade")
 #df['data_igual'] = pd.to_datetime(df['ocorrencia_dia']) == pd.to_datetime('31/12/2023')
 #print(df['data_igual'])
 
+st.divider()
+
 c1, c3, c2 = st.columns([2,.5,2])
 with c1:
     st.plotly_chart(fig)
     st.write("O gráfico apresenta a distribuição percentual das investigações de ocorrências aeronáuticas, categorizadas em 'Finalizadas' e 'Ativas'. Cada categoria é representada por uma fatia do círculo, cujo tamanho reflete a proporção relativa do total de investigações. Essa visualização permite uma compreensão imediata da distribuição das investigações em termos de status, destacando a porcentagem de investigações que foram concluídas e aquelas que ainda estão em andamento. Analisar essa distribuição é crucial para avaliar a eficácia dos processos de investigação e para monitorar o progresso na resolução de ocorrências aeronáuticas, contribuindo assim para o aprimoramento contínuo da segurança na aviação.")
 with c2:
     st.plotly_chart(fig2)
-    st.write("Este gráfico apresenta a distribuição geográfica da quantidade de ocorrências aeronáuticas por Unidade Federativa (UF) no Brasil. Esta visualização permite uma rápida comparação entre os diferentes Estados, destacando aqueles com maior e menor incidência de ocorrências aeronáuticas. Analisar essa distribuição pode ajudar na identificação de padrões regionais e na formulação de estratégias específicas para melhorar a segurança na aviação em áreas específicas do país.")
+    st.write("Representação visual do número de aeronaves envolvidas nas ocorrências por estado, essa análise ajuda a identificar regiões que requerem maior atenção em termos de segurança aérea e implementação de medidas preventivas.")
 
 df = pd.read_csv(os.getcwd() + '/app/fator_contribuinte.csv', sep=";", encoding="ISO-8859-1")
+
+st.divider()
 
 st.subheader('Análise Fator Contribuinte das Ocorrências')
 
 st.dataframe(df, use_container_width=True)
+
+st.write("Conjunto de dados que detalha os fatores contribuintes para as ocorrências na aviação civil brasileira. Cada entrada do conjunto de dados inclui informações sobre os fatores específicos que contribuíram para uma determinada ocorrência.")
+
+st.divider()
 
 q= 'FATOR OPERACIONAL'
 n= 'INDISCIPLINA DE VOO'
@@ -107,6 +126,9 @@ df['qnt_fator_nome'] = df['fator_nome'].map(qnt)
 fig = px.bar(df, x='fator_nome', y='qnt_fator_nome',title="Comparação da quantidade de cada fator contribuinte.", text_auto='.2s')
 fig.update_layout(xaxis_title="Nome do Fator Contribuinte", yaxis_title="Quantidade Fator Contribuinte")
 st.plotly_chart(fig, use_container_width=True)
+st.write("O gráfico apresenta uma comparação visual da quantidade de cada fator contribuinte para as ocorrências na aviação civil brasileira. Cada barra representa a incidência de um fator específico, como Aplicação de comandos, Condições meteorológicas adversas, julgamento de pilotagem, planejamento de voo.")
+
+st.divider()
 #df['fator_area'].value_counts().to_frame('fator_area')
 
 #st.plotly_chart(fig)
@@ -125,7 +147,6 @@ df.replace(to_replace='***', value="AGUARDANDO RESPOSTA", regex=False, inplace=T
 #count = df[['recomendacao_status', 'recomendacao_destinatario_sigla']].where(df['recomendacao_status'] == 'ADOTADA').groupby(df['recomendacao_destinatario_sigla']).value_counts().to_frame('count')
 
 #print(count)
-
 st.subheader("Recomendações, status e suas quantidades que foram ou não, adotadas pelas empresas.")
 
 filter = ['ADOTADA', 'NÃO ADOTADA', 'AGUARDANDO RESPOSTA']
@@ -135,6 +156,10 @@ df_filter = df[['recomendacao_status']].where(df['recomendacao_status'] == filte
 
 
 st.dataframe(df_filter, use_container_width=True)
+
+st.write("A tabela apresenta um conjunto de dados detalhando as siglas dos órgãos de segurança aeronáutica, o status das recomendações emitidas por esses órgãos (adotado, não adotado, aguardando resposta) e a quantidade correspondente de cada recomendação para cada órgão.")
+
+st.divider()
 
 #print('================================')
 #print(df_filter)
@@ -150,7 +175,7 @@ else:
     fig.update_layout(xaxis_title="Destinatários (Sigla)", yaxis_title="Qnt Recomendações (Adotadas)")
 
 st.plotly_chart(fig, use_container_width=True)
-
+st.divider()
 st.header("CONCLUSÃO")
 st.write("""
     Ao concluir este projeto de análise das ocorrências na aviação civil brasileira, fica evidente a importância de uma abordagem abrangente e proativa para aprimorar 
