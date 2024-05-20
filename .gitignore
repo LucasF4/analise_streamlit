@@ -5,3 +5,5 @@ dockerfile
 image.png
 teste.ipynb
 app/*.csv
+
+unsafe.txt
