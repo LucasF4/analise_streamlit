@@ -40,7 +40,10 @@ st.dataframe(df)
 
 #df = df['ocorrencia_latitude'].dropna()
 
-fig = px.scatter_geo(df, lat='ocorrencia_latitude', lon='ocorrencia_longitude', title="Relatório do local de acidente.")
+colunas = ['LAT', 'LON']
+dataframe1 = pd.read_csv(os.getcwd() + '/app/ocorrencias_LAT-LONG.txt', sep=";", names=colunas)
+
+fig = px.scatter_geo(dataframe1, lat="LAT", lon="LON", scope='south america', title="Mapa onde representa a localização de cada acidente")
 
 fig2 = px.bar(df, x="ocorrencia_classificacao", y='ocorrencia_dia', title="Relatório de datas de cada tipo de ocorrência.")
 fig2.update_layout(xaxis_title="Tipos das Ocorrências", yaxis_title="Data Ocorrências")
